@@ -151,6 +151,32 @@ class ServiceController{
         }
 
     }
+    async getAllServiceOfStudent(req, res){
+        try {
+
+            const arrayservice = await prisma.registeredService.findMany({
+                where: {
+                    student_id: Number(req.params.id),
+                    // is_running: Number(1)
+                },
+                include: {
+                    service: true
+                }
+            })
+
+            if(arrayservice.length > 0) return res.json({ok: true, data: arrayservice})
+            else return res.json({ok:false, message: "Fail"})
+            
+        } catch (error) {
+            res.status(500).json({
+                ok: false,
+                error: "Something went wrong!"
+              });
+        }
+        finally{
+            async () => await prisma.$disconnect()
+        }
+    }
 
 }
 
